@@ -1,0 +1,388 @@
+Route::get('akash_practise', array('access' => ['resource|akash.index'], 'uses' => 'AkashpractiseController@index'))->name('akash_practise');
+
+server side pagination
+
+
+
+
+ALTER TABLE `table_name` 
+ADD `created_at` TIMESTAMP NULL DEFAULT NULL  
+AFTER last_field,  
+
+ADD `created_by` INT(11) NOT NULL  AFTER `created_at`,  ADD `updated_at` TIMESTAMP NULL DEFAULT NULL  AFTER `created_by`,  ADD `updated_by` INT(11) NOT NULL  AFTER `updated_at`,  ADD `deleted_at` TIMESTAMP NULL DEFAULT NULL  AFTER `updated_by`,  ADD `deleted_by` INT(11) NOT NULL  AFTER `deleted_at`,  ADD `project_id` INT(11) NOT NULL  AFTER `deleted_by`,  ADD `valid` TINYINT(1) NOT NULL  AFTER `project_id`;
+
+
+
+
+
+
+
+
+$data['purchase_product_lists'] = PurchaseDetails::
+            join('pos_products','pos_products.id','=','purchase_details.product_id')
+            ->join('pos_units','pos_units.id','=','pos_products.unit_id')
+            ->select('purchase_details.id','purchase_details.product_id','purchase_details.quantity','purchase_details.purchase_price','purchase_details.product_total_amount','pos_products.product_name','pos_units.unit_name')
+            ->where('purchase_details.purchase_master_id',$purchase_master_id)
+            ->get();
+
+
+
+
+
+
+
+
+
+<?php $panelTitle = "Project Create"; ?>
+<form type="create" panelTitle="{{$panelTitle}}" class="form-load form-horizontal">
+    {{csrf_field()}}
+    <div class="row mt15">
+        <div class="col-lg-12 col-md-12 sortable-layout">
+            <div class="form-group">
+                <label class="col-lg-4 col-md-4 control-label required" for="project_name">Project Name</label>
+                <div class="col-lg-4 col-md-4">
+                    <input required name="project_name" placeholder="Project Name" class="form-control" id="project_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-4 col-md-4 control-label required" for="land_area">Land Area</label>
+                <div class="col-lg-4 col-md-4">
+                    <input type="text" autofocus required name="land_area" placeholder="Land Area" class="form-control" id="land_area">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-4 col-md-4 control-label" for="owner_name">Owner Name</label>
+                <div class="col-lg-4 col-md-4">
+                    <input type="text" name="owner_name" placeholder="owner name" class="form-control" id="owner_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-4 col-md-4 control-label">Start Date</label>
+                <div class="col-lg-4 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input type="text" id="start_date" name="start_date" class="form-control dateTimeFormat"
+                        placeholder="e.g. 15-12-2019" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-4 col-md-4 control-label">End Date</label>
+                <div class="col-lg-4 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input type="text" id="end_date" name="end_date" class="form-control dateTimeFormat"
+                        placeholder="e.g. 15-12-2019" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            {{-- material-section  --}}
+            <div class="form-group">
+                <label for="" class="col-lg-4 col-md-4 control-label">Material</label>
+                    <div class="parentdiv_1">
+                        <div class="col-lg-2 col-md-2">
+                            <select name="" class="form-control select2 material_select material_already_select_1">
+                                <?php $materials_products = DB::table('pos_products')->get();?>
+                                <option value="0">Select Product</option>
+                                @foreach($materials_products as $pos_product)
+                                    <option value="{{$pos_product->id}}">{{$pos_product->product_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+    
+                        <div class="col-lg-2 col-md-2">
+                            <input get_id="" type="text" name="" class="form-control material_quantity_get_id" id="material_qantity" placeholder="Quantity">
+                        </div>
+    
+                        <div class="col-lg-2 col-md-2">
+                            <input type="text" disabled name="unit_price_sum[]" class="form-control unit_price_sum" id="material_unit_price" placeholder="Unit Price">
+                        </div>
+    
+                    </div>
+                    
+                <div class="material-section">
+                
+                </div>
+                
+                <div class="col-md-2" id="material-plus">
+                    <i class="fa fa-plus-square hand"></i>
+                </div>
+
+                <div class="col-lg-12 col-md-12">
+                    <div class="col-lg-8"></div>
+                    <div class="col-lg-4">
+                        <div><br>
+                            <span><b> Total Price: </b></span>
+                            <span id="material_total_price">00</span>.00 Tk
+                        </div>
+                    </div>
+                </div>
+            
+
+            </div>
+            <div class="form-group mb0 responsive-create">
+                <div class="col-lg-offset-4 col-md-offset-4 col-lg-9 col-md-9">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("select.select2").select2({
+            placeholder: "Select"
+        });
+
+        // $('.dateTimeFormat').each(function(){
+        //     $(this).datepicker({format: "dd-mm-yyyy"});
+        // });
+
+        $("#material-plus").click(function(){
+            var selector = $(this);
+            $.ajax({
+            type:'get',
+            url:'bPack/material/pos-product-view',
+            dataType:'json',
+            success: function(response){
+                // console.log(response);
+                
+                // $(".material_option option").remove();
+                
+                $(".material-section").append(
+                    '<div class="parent1">\
+                        <div class="col-lg-4"></div>\
+                        <div class="col-lg-2 col-md-2" style="padding-top:10px;padding-bottom:10px">\
+                            <select name="" class="form-control select2 material_option material_select1 material_already_select">\
+                                <option value="0">Select Product</option>\
+                            </select><span class="text-danger already_select_mgs"></span>\
+                        </div>\
+                        <div class="col-lg-2 col-md-2" style="padding-top:10px;padding-bottom:10px">\
+                            <input get_id="" type="text" name="" class="form-control material_unit_quantity_1 material_quantity_get_id" id="" placeholder="Quantity">\
+                        </div>\
+                        <div class="col-lg-2 col-md-2" style="padding-top:10px;padding-bottom:10px">\
+                            <input type="text" disabled name="unit_price_sum[]" class="form-control material_unit_price1 unit_price_sum" placeholder="Unit Price">\
+                        </div>\
+                        <div class="col-md-2 material-minus">\
+                            <i class="fa fa-minus-square hand"></i>\
+                        </div>\
+                    </div>'
+                );
+
+                $.each(response.materials_show_pos_product, function(key, item){
+                    $(".material_option").append("<option value="+item.id+">"+item.product_name+"</option>");
+                    
+                });
+
+            
+            },
+            error:function(response){
+                console.log(response);
+            }
+        });
+           
+        });
+
+
+        $(document).on('click', '.material-minus', function(e) {
+            e.preventDefault();
+            var sum = 0;
+            
+            $(this).parent('div').remove();
+            $('.unit_price_sum').each(function() {
+                var value = +this.value || 0;
+                sum += value;
+                });
+            $("#material_total_price").text(sum);
+        });
+
+        $(document).on('change', '.material_select', function(){
+
+            var id = $(this).val();
+            var selector = $(this);
+
+                var tab_attribs = [];
+                $('.material_quantity_get_id').each(function () {
+                    tab_attribs.push($(this).attr('get_id'));
+                });
+
+                // console.log(tab_attribs);
+
+                if(tab_attribs.indexOf(id)== -1){
+
+
+                        $.ajax({
+                        type: 'get',
+                        url: "bPack/material/pos-product-view-single",
+                        data: {id:id},
+                        dataType: 'json',
+                        success:function(response){
+
+                            // console.log(response.materials_show_pos_product_single.purchase_price);
+                            $(selector).closest('div').parent('.parentdiv_1').find("#material_qantity").val(01);
+                            $(selector).closest('div').parent('.parentdiv_1').find("#material_qantity").attr('get_id',id);
+                            $(selector).closest('div').parent('.parentdiv_1').find('#material_unit_price').val(response.materials_show_pos_product_single.purchase_price);
+
+                        
+
+                            var sum = 0;
+                            $('.unit_price_sum').each(function() {
+                                var value = +this.value || 0;
+                                sum += value;
+                                });
+                            $("#material_total_price").text(sum);
+
+                            
+
+                        },
+                        error:function(response){
+                            console.log(response);
+                        }
+                    });
+
+                    
+                }else{
+                    $(selector).closest('div').parent('.parentdiv_1').find(".material_already_select_1").val('0');
+
+                    alert('Already Selected This Product');
+                }
+
+            
+            
+        });
+
+        $("#material_qantity").on('keyup',function(){
+            
+            $quantity = $(this).val();
+            var id = $(this).attr('get_id');
+            // alert($quantity);
+            $.ajax({
+                type: 'get',
+                url: "bPack/material/pos-product-view-single",
+                data: {id:id},
+                dataType: 'json',
+                success:function(response){
+                    // console.log(response.materials_show_pos_product_single.purchase_price);
+                    $("#material_unit_price").val((response.materials_show_pos_product_single.purchase_price) * $quantity);
+
+                    var sum = 0;
+                    $('.unit_price_sum').each(function() {
+                    var value = +this.value || 0;
+                    sum += value;
+                    });
+                    $("#material_total_price").text(sum);
+
+                },
+                error:function(response){
+                    console.log(response);
+                }
+            });
+
+            
+        });
+
+
+        $(document).on('change', '.material_select1', function(){
+
+
+            var id = $(this).val();
+            var selector = $(this);
+
+                var tab_attribs = [];
+                $('.material_quantity_get_id').each(function () {
+                    tab_attribs.push($(this).attr('get_id'));
+                });
+
+                // console.log(tab_attribs);
+                if(tab_attribs.indexOf(id)== -1){
+
+
+                    $.ajax({
+                        type: 'get',
+                        url: "bPack/material/pos-product-view-single",
+                        data: {id:id},
+                        dataType: 'json',
+                        success:function(response){
+                            // console.log(response.materials_show_pos_product_single.purchase_price);
+
+                            $(selector).closest('div').parent('.parent1').find('.material_unit_quantity_1').val(1);
+                            $(selector).closest('div').parent('.parent1').find('.material_unit_quantity_1').attr('get_id',response.materials_show_pos_product_single.id);
+                            $(selector).closest('div').parent('.parent1').find('.material_unit_price1').val(response.materials_show_pos_product_single.purchase_price);
+
+                            var sum = 0;
+                            $('.unit_price_sum').each(function() {
+                            var value = +this.value || 0;
+                            sum += value;
+                            });
+                            $("#material_total_price").text(sum);
+
+                        },
+                        error:function(response){
+                            console.log(response);
+                        }
+                    });
+
+
+                    
+                }else{
+                    $(selector).closest('div').parent('.parent1').find('.material_already_select').val('0');//ok
+                    $(selector).closest('div').parent('.parent1').find('.already_select_mgs').text('Product Already Selected');
+                    // alert('Already Selected This Product');
+                }
+            
+            
+        });
+
+        $(document).on('keyup','.material_unit_quantity_1',function(){
+
+            var quantity = $(this).val();
+            var id = $(this).attr('get_id');
+            var selector = $(this);
+            // alert(quantity);
+            $.ajax({
+                type: 'get',
+                url: "bPack/material/pos-product-view-single",
+                data: {id:id},
+                dataType: 'json',
+                success:function(response){
+                    console.log(response.materials_show_pos_product_single.purchase_price);
+                    $(selector).closest('div').parent('.parent1').find('.material_unit_price1').val((response.materials_show_pos_product_single.purchase_price)*quantity);
+
+                    var sum = 0;
+                    $('.unit_price_sum').each(function() {
+                    var value = +this.value || 0;
+                    sum += value;
+                    });
+                    $("#material_total_price").text(sum);
+
+
+                },
+                error:function(response){
+                    console.log(response);
+                }
+            });
+
+            
+        });
+        
+
+
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+$lastInsertId = DB::getPdo()->lastInsertId();
+
+

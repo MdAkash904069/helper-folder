@@ -1,0 +1,477 @@
+<?php $panelTitle = "Sells Destribution"?>
+
+<div class="row mt15">
+
+
+    
+    <div class="col-md-12 col-sm-12 sortable-layout" id="customer_display">
+        <div class="panel panel-default chart">
+            <div class="panel-body" style="border: 2px dashed#333; font-weight:bold;color: #333;">
+                <div class="simple-chart" style="line-height: 25px;">
+                    <div class="row" style="text-align: center;"><span style="font-size: 14px; border-bottom: 1px solid #333;">Region Sales Target Details</span></div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="row">
+                                <div class="col-md-3 col-sm-4 col-xs-5">Region Name</div>
+                                <div class="col-md-9 col-sm-8 col-xs-7">: 
+                                    <span class="customer_name" style="color:#333"> {{$clientCategories->regionName}}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-sm-4 col-xs-5">RSM Name</div>
+                                <div class="col-md-9 col-sm-8 col-xs-7">: 
+                                    <span class="phone" style="color:#333">{{$clientCategories->serviceHolderName}}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-sm-4 col-xs-5">Month</div>
+                                <div class="col-md-9 col-sm-8 col-xs-7">: 
+                                    <span class="phone" style="color:#333">{{@helper::getMonthName($clientCategories->monthly)}}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-sm-4 col-xs-5">Year</div>
+                                <div class="col-md-9 col-sm-8 col-xs-7">: 
+                                    <span class="phone" style="color:#333">{{$clientCategories->yearly}}</span>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="row">
+                                <div class="col-md-4 col-sm-4 col-xs-5">Sells Target Limit</div>
+                                <div class="col-md-8 col-sm-8 col-xs-7">: <span id="credit_limit">{{$clientCategories->sales_target}}</span> Tk
+                                    <span class="phone" style="color:#333"></span>
+                                </div>
+                                <input type="hidden" value="" name="credit_limit" />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 col-sm-4 col-xs-5">Rest Balance</div>
+                                <div class="col-md-8 col-sm-8 col-xs-7">:<span>  <span id="current_amount">0.00</span> <br>
+                                    <span id="errMsg" style="color: red;display:none">Area Target Not greater then Sells Target</span>
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+  
+        <form type="create" id="rawMaterialTransferForm" class="form-load form-horizontal mt0">
+            {{csrf_field()}}
+
+           
+            
+            <table class="table table-bordered mt10" style="margin: 10px;width: 98%;">
+                <thead>
+                    <tr>
+                        <th width="15%" class="required">Employee Area</th>
+                        <th width="10%">Transfer Target Price</th>
+                        <th width="4%">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="oopportunity_product_plus" class="amountPurpose">
+                    <tr>
+                        <td>
+                            <div id="product_src" class="row advance-search" search-url="" search-title="Product Search">
+                                <div class="form-group pl10 mb0">
+                                    <div class="col-sm-9 pl15 pr5" id="">
+                                        <select name="region_area_id[]" id="product_id" class="select2 form-control adv-search product_select" required="">
+                                            <option value="">Select Area</option>
+                                            @foreach($region_areas as $region_area)
+                                                <option value="{{$region_area->id}}">{{$region_area->name}}</option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+
+                        <td>
+                            <div class="form-group pl10 pr10 mb0">
+                                <input name="tranfer_region_sells_amount[]" placeholder="Tranfer Region Sells Amount"
+                                    class="form-control">
+                            </div>
+                        </td>
+                        <td class="pub-plus-minus">
+                            <i class="fa fa-plus-square hand pub-plus"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <div class="row purchase_bottom">
+                <div class="col-md-6 col-lg-6">
+                    
+                </div> <!-- end col md8 -->
+
+                <div class="col-md-2 col-lg-3 purchase_collection_name">
+                    <div class="form-group col-md-11 col-lg-12">
+                        <h4>Total amount=</h4>
+                    </div>
+                    <br>
+                </div> <!-- close div3 -->
+
+                <div class="col-md-2 col-lg-2 purchase_collection_amount">
+                    <h4 style="text-align: right;"><span class=color>৳</span><span class="color"
+                            id="TotalAmount">00</span></h4>
+                    
+                    <hr id="divider_hr">
+                </div>
+
+            </div>
+
+            
+            <div style="display:inline-block;margin-top: 3%" class="pull-left ml10">
+                <button type="submit" class="btn btn-success submitbutton" data="0">Save</button>
+            </div>
+        </form>
+
+
+        <table style="display: none">
+            
+
+            <tbody id="oopportunity_product_plus_clone" class="amountPurpose">
+                <tr>
+                    <td>
+                        <div id="product_src" class="row advance-search" search-url="" search-title="Product Search">
+                            <div class="form-group pl10 mb0">
+                                <div class="col-sm-9 pl15 pr5" id="">
+                                    <select name="region_area_id[]" id="" class=" form-control adv-search product_select" required="">
+                                        <option value="">Select Area</option>
+                                        @foreach($region_areas as $region_area)
+                                            <option value="{{$region_area->id}}">{{$region_area->name}}</option>
+                                        @endforeach
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                    
+                   
+                    <td>
+                        <div class="form-group pl10 pr10 mb0">
+                            <input name="tranfer_region_sells_amount[]" placeholder="Tranfer Region Sells Amount"
+                                class="form-control">
+                        </div>
+                    </td>
+                    <td class="pub-plus-minus">
+                        <i class="fa fa-minus-square hand pub-minus"></i>
+                        <i class="fa fa-plus-square hand pub-plus"></i>
+                    </td>
+                </tr>
+            </tbody>
+ 
+        </table>
+        <div class=clearfix></div>
+
+        
+    </div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // $(".select2").select2({
+        //     placeholder: "Select",
+        // });
+
+        $("select.select2").not(".clone, .pro").select2({
+            placeholder: "Select"
+        });
+
+        
+
+
+        // changeBrach();
+
+   
+    //     //STOCK FROM WISE STOCK TO SHOW
+    //     $("#branch_id").on('change', function () {
+    //         changeBrach();
+    //     });
+
+    //     function changeBrach()
+    //     {
+    //         let branchId = $("#branch_id").val();
+    //         $('#to_sale_center').html("");
+    //         $.ajax({
+    //             url: '{{route("bPack.toSaleCenterBranch")}}',
+    //             data: {
+    //                 branchId: branchId
+    //             },
+    //             type: 'GET',
+    //             dataType: "json",
+    //             contentType: false,
+    //             processData: true,
+    //             success: function (data) {
+    //                 $.each(data, function (index, value) {
+    //                     $('#to_sale_center').append("<option value="">""</option>");
+    //                 });
+    //             }
+    //         });
+            
+    //         userProducts(branchId,1);
+            
+    //     }
+
+        $('#oopportunity_product_plus').on('click', '.pub-plus', function () {
+            productTrAdd('oopportunity_product_plus');
+        });
+        $('#oopportunity_product_plus').on('click', '.pub-minus', function () {
+            productTrRemove('oopportunity_product_plus', $(this));
+        });
+
+    //     function countInArray(array, what) {
+    //         var count = 0;
+    //         for (var i = 0; i < array.length; i++) {
+    //             if (array[i] === what) {
+    //                 count++;
+    //             }
+    //         }
+    //         return count;
+    //     }
+
+
+    //     // Product's Details
+    //     $("#rawMaterialTransferForm").on('change', '.product_select', function (e) {
+
+    //         var productId = $(this).children("option:selected").val();
+    //         var branch_id = $('#branch_id').val();
+    //         var $selector = $(this).closest("tr");
+    //         var $parentTr = $(this).parents('tr').first();
+
+    //         var productUnitShowField = $selector.find("input[name='unit_disabled[]']");
+    //         var productPriceShowField = $selector.find("input[name='sell_price_disabled[]']");
+    //         var qtyFeedback = $selector.find("div.qtyFeedback");
+
+    //         var stored  = [];
+    //         $('#rawMaterialTransferForm #product_id').each(function(index) {
+    //             var value = $(this).val();
+    //             stored.push(value);
+    //         });
+    //         var times = countInArray(stored, productId);
+
+    //         if(times > 1){
+
+    //             $.ajax({
+    //                 url: appUrl.baseUrl('/bPack/get-user-products'),
+    //                 type: "GET",
+    //                 data: {modalType:6,branch_id:branch_id},
+    //                 dataType: 'html',
+    //                 success: function (data) {
+    //                     dataFilter(data);
+    //                     var length = $('#opportunity_product_plus tr').length;
+    //                     $('#opportunity_product_plus tr').each(function(index){
+    //                         if (index === (length - 1)) {
+    //                             var $parentTr = $(this).first();
+    //                             $parentTr.find("#product_id_view").html(data);
+    //                             $parentTr.find("#product_id").select2({placeholder:"Select Product"});
+    //                             $selector.find('#hidemassge').show();
+    //                             setTimeout(function(){
+    //                                 $selector.find('#hidemassge').hide();
+    //                             },1500);
+    //                         }
+  
+    //                     });
+    //                 }
+    //             });
+    //             return false;
+
+    //         }else{
+
+    //             $.ajax({
+    //                 mimeType: 'text/html; charset=utf-8',
+    //                 url: '{{route("bPack.productSortDetails")}}',
+    //                 dataType: 'JSON',
+    //                 data: {
+    //                     productId: productId,branch_id:branch_id
+    //                 },
+    //                 type: 'GET',
+    //                 success: function (response) 
+    //                 {
+    //                     console.log(response);
+    //                     productPriceShowField.val(response.data.sales_price);
+    //                     productUnitShowField.val(response.unit_name);
+    //                     /*alert(response.quantity);*/
+    //                     $parentTr.find("#q_value").text(response.quantity);
+    //                     $parentTr.find("#q_text").show();
+    //                     totalPriceUpdate($parentTr);
+
+    //                     $('.quantity').on('keyup', function () {
+    //                         var sum = 0;
+    //                         $('.quantity').each(function () {
+    //                             sum += Number($(this).val());
+    //                         });
+    //                         $('#paid_amount').val(sum);
+    //                         var elmQty = $(this).val();
+    //                         // || sum > Number(data.quantity)
+    //                         if (Number(elmQty) > Number(response.quantity)) {
+    //                             // console.log('elmQty '+elmQty);
+    //                             $("button[type='submit']").prop('disabled', true);
+    //                             $('.pub-plus').hide();
+    //                             qtyFeedback.html(
+    //                                 '<strong class="text-danger">Quantity out of stock!</strong>'
+    //                                 );
+    //                         } else {
+
+    //                             $('.pub-plus').show();
+    //                             $("button[type='submit']").prop('disabled', false);
+    //                             qtyFeedback.html("");
+    //                         }
+
+    //                     });
+    //                 }
+    //             });
+
+    //         }
+    //     });
+
+    //     //keyup for Quantity field
+    //     $('#rawMaterialTransferForm').on("keyup", "#quantity", function () {
+    //         var $parentTr = $(this).parents('tr').first();
+    //         totalPriceUpdate($parentTr);
+
+    //     });
+
+    // });
+
+    function productTrAdd(selector) {
+        var sn = parseInt($('#' + selector).find('.td-sn').last().html()) + 1;
+        $('#' + selector).append($('#' + selector + '_clone').html());
+        //FV
+        $('#' + selector).find('.pub-plus').not($('#' + selector + ' .pub-plus').last()).remove();
+        $('#' + selector).find('.td-sn').last().html(sn);
+
+    
+    }
+
+    function productTrRemove(selector, $that) {
+        var $row = $that.parents('tr');
+        $row.remove();
+        if ($('#' + selector + ' .pub-plus-minus').length == 1) {
+            $('#' + selector + ' .pub-plus-minus').html('<i class="fa fa-plus-square hand pub-plus"></i>');
+        } else {
+            $('#' + selector + ' .pub-plus-minus').last().html(
+                '<i class="fa fa-minus-square hand pub-minus"></i> <i class="fa fa-plus-square hand pub-plus"></i>');
+        }
+
+        //Serial
+        $('#' + selector).find('.td-sn').each(function (index) {
+            $(this).html(index + 1);
+        });
+        grandTotalProductsPrice();
+    }
+
+    // //Grand Total Price Method
+    // function grandTotalProductsPrice() {
+    //     var total_amount = 0;
+    //     $("#rawMaterialTransferForm").find('input[name="per_product_total[]"]').each(function () {
+    //         if (!isNaN(this.value) && this.value.length != 0) {
+    //             total_amount += parseFloat(this.value);
+    //         }
+    //     });
+    //     $("#TotalAmount").text(total_amount + ".00");
+    //     $("#TotalHiddenAmount").val(total_amount);
+
+    // }
+
+    // //Product wise price Update with quantity
+    // function totalPriceUpdate($parentTr) {
+    //     var sell_price = $parentTr.find('#sell_price').val();
+    //     var quantity = $parentTr.find('#quantity').val();
+    //     var perProUpdateTotalAmount = Number(sell_price) * Number(quantity);
+    //     $parentTr.find('input[name="per_product_total[]"]').val(perProUpdateTotalAmount);
+    //     grandTotalProductsPrice();
+    //     console.log(quantity);
+
+    // }
+
+    // $('.submitbutton').click(function() {
+    //     var pressedSubmitBtnData = $(this).attr('data');
+
+    //     if (pressedSubmitBtnData == 1) {
+    //         let stock_invoice = $('.stock-invoice').text();
+    //         $.ajax({
+    //             url: "{{route('bPack.getRawMaterialInvoice')}}",
+    //             type: "GET",
+    //             data: {stock_invoice:stock_invoice},
+    //             success: function (data) {
+    //                 // console.log(data);
+    //                 w = window.open(data,"_blank", "width=1600,height=800");
+    //                 // w.document.open();
+    //                 // w.document.write(data);
+    //                 w.document.close();
+    //                 w.window.print();
+    //             }
+    //         }); 
+    //     }
+        
+    // });
+
+    // function userProducts(branch_id,pro_row_type=false){
+    //     //PRODUCTS
+    //     $.ajax({
+    //         url: appUrl.baseUrl('/bPack/get-user-products'),
+    //         type: "GET",
+    //         data: {modalType:6,branch_id:branch_id,businessType: },
+    //         dataType: 'html',
+    //         success: function (data) {
+    //             dataFilter(data);
+    //             if (pro_row_type==1) {
+    //                 $('#opportunity_product_plus tr').each(function(index){
+    //                     var $parentTr = $(this).first();
+    //                     $parentTr.find("#product_id_view").html(data);
+    //                     $parentTr.find("#sales_price").val('');
+    //                     $parentTr.find("#quantity").val('');
+    //                     $parentTr.find("#product_id").select2({placeholder:"Select Product"});
+    //                 });
+    //             }
+    //             else if(pro_row_type ==2) // for clone
+    //             {
+    //                 var length = $('#opportunity_product_plus tr').length;
+    //                 $('#opportunity_product_plus tr').each(function(index){
+    //                     if (index === (length - 1)) {
+    //                         var $parentTr = $(this).first();
+    //                         $parentTr.find("#product_id_view").html(data);
+    //                         $parentTr.find("#product_id").select2({placeholder:"Select Product"});
+    //                     }
+    //                     else
+    //                     {
+
+    //                     }
+                        
+    //                 });
+                    
+    //             }
+    //             else
+    //             {
+
+    //             }
+
+    //         }
+
+
+
+    });
+    
+
+</script>
